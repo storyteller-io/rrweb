@@ -1,5 +1,4 @@
-/// <reference types="node" />
-import { serializedNodeWithId, idNodeMap, INode, MaskInputOptions, SlimDOMOptions } from 'rrweb-snapshot';
+import { serializedNodeWithId, idNodeMap, INode, MaskInputOptions, SlimDOMOptions, idNodeMap2, INode2 } from 'rrweb-snapshot';
 import { PackFn, UnpackFn } from './packer/base';
 import { FontFaceDescriptors } from 'css-font-loading-module';
 import { IframeManager } from './record/iframe-manager';
@@ -218,6 +217,7 @@ declare type mutationCallbackParam = {
     attributes: attributeMutation[];
     removes: removedNodeMutation[];
     adds: addedNodeMutation[];
+    isAttachIframe?: true;
 };
 export declare type mutationCallBack = (m: mutationCallbackParam) => void;
 export declare type mousemoveCallBack = (p: mousePosition[], source: IncrementalSource.MouseMove | IncrementalSource.TouchMove) => void;
@@ -280,31 +280,31 @@ export declare type fontParam = {
 };
 export declare type LogLevel = 'assert' | 'clear' | 'count' | 'countReset' | 'debug' | 'dir' | 'dirxml' | 'error' | 'group' | 'groupCollapsed' | 'groupEnd' | 'info' | 'log' | 'table' | 'time' | 'timeEnd' | 'timeLog' | 'trace' | 'warn';
 export declare type Logger = {
-    assert?: (value: any, message?: string, ...optionalParams: any[]) => void;
-    clear?: () => void;
-    count?: (label?: string) => void;
-    countReset?: (label?: string) => void;
-    debug?: (message?: any, ...optionalParams: any[]) => void;
-    dir?: (obj: any, options?: NodeJS.InspectOptions) => void;
-    dirxml?: (...data: any[]) => void;
-    error?: (message?: any, ...optionalParams: any[]) => void;
-    group?: (...label: any[]) => void;
-    groupCollapsed?: (label?: any[]) => void;
+    assert?: typeof console.assert;
+    clear?: typeof console.clear;
+    count?: typeof console.count;
+    countReset?: typeof console.countReset;
+    debug?: typeof console.debug;
+    dir?: typeof console.dir;
+    dirxml?: typeof console.dirxml;
+    error?: typeof console.error;
+    group?: typeof console.group;
+    groupCollapsed?: typeof console.groupCollapsed;
     groupEnd?: () => void;
-    info?: (message?: any, ...optionalParams: any[]) => void;
-    log?: (message?: any, ...optionalParams: any[]) => void;
-    table?: (tabularData: any, properties?: ReadonlyArray<string>) => void;
-    time?: (label?: string) => void;
-    timeEnd?: (label?: string) => void;
-    timeLog?: (label?: string, ...data: any[]) => void;
-    trace?: (message?: any, ...optionalParams: any[]) => void;
-    warn?: (message?: any, ...optionalParams: any[]) => void;
+    info?: typeof console.info;
+    log?: typeof console.log;
+    table?: typeof console.table;
+    time?: typeof console.time;
+    timeEnd?: typeof console.timeEnd;
+    timeLog?: typeof console.timeLog;
+    trace?: typeof console.trace;
+    warn?: typeof console.warn;
 };
 export declare type ReplayLogger = Partial<Record<LogLevel, (data: logData) => void>>;
 export declare type LogParam = {
     level: LogLevel;
-    trace: Array<string>;
-    payload: Array<string>;
+    trace: string[];
+    payload: string[];
 };
 export declare type fontCallback = (p: fontParam) => void;
 export declare type logCallback = (p: LogParam) => void;
@@ -340,6 +340,13 @@ export declare type Mirror = {
     removeNodeFromMap: (n: INode) => void;
     has: (id: number) => boolean;
 };
+export declare type Mirror2 = {
+    map: idNodeMap2;
+    getId: (n: INode2) => number;
+    getNode: (id: number) => INode2 | null;
+    removeNodeFromMap: (n: INode2) => void;
+    has: (id: number) => boolean;
+};
 export declare type throttleOptions = {
     leading?: boolean;
     trailing?: boolean;
@@ -369,7 +376,7 @@ export declare type playerConfig = {
     logConfig: LogReplayConfig;
 };
 export declare type LogReplayConfig = {
-    level?: Array<LogLevel> | undefined;
+    level?: LogLevel[] | undefined;
     replayLogger: ReplayLogger | undefined;
 };
 export declare type playerMetaData = {
@@ -421,7 +428,7 @@ export declare type StringifyOptions = {
     numOfKeysLimit: number;
 };
 export declare type LogRecordOptions = {
-    level?: Array<LogLevel> | undefined;
+    level?: LogLevel[] | undefined;
     lengthThreshold?: number;
     stringifyOptions?: StringifyOptions;
     logger?: Logger;

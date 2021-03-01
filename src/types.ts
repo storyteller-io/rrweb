@@ -4,6 +4,8 @@ import {
   INode,
   MaskInputOptions,
   SlimDOMOptions,
+  idNodeMap2,
+  INode2,
 } from 'rrweb-snapshot';
 import { PackFn, UnpackFn } from './packer/base';
 import { FontFaceDescriptors } from 'css-font-loading-module';
@@ -474,6 +476,14 @@ export type Mirror = {
   getId: (n: INode) => number;
   getNode: (id: number) => INode | null;
   removeNodeFromMap: (n: INode) => void;
+  has: (id: number) => boolean;
+};
+
+export type Mirror2 = {
+  map: idNodeMap2;
+  getId: (n: INode2) => number;
+  getNode: (id: number) => INode2 | null;
+  removeNodeFromMap: (n: INode2) => void;
   has: (id: number) => boolean;
 };
 

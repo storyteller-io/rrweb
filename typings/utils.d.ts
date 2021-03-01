@@ -1,7 +1,8 @@
-import { Mirror, throttleOptions, listenerHandler, hookResetter, blockClass, eventWithTime, addedNodeMutation, removedNodeMutation, textMutation, attributeMutation, mutationData, scrollData, inputData, DocumentDimension } from './types';
-import { INode, serializedNodeWithId } from 'rrweb-snapshot';
+import { Mirror, throttleOptions, listenerHandler, hookResetter, blockClass, eventWithTime, addedNodeMutation, removedNodeMutation, textMutation, attributeMutation, mutationData, scrollData, inputData, DocumentDimension, Mirror2 } from './types';
+import { INode, serializedNodeWithId, INode2 } from 'rrweb-snapshot';
 export declare function on(type: string, fn: EventListenerOrEventListenerObject, target?: Document | Window): listenerHandler;
 export declare const mirror: Mirror;
+export declare const mirror2: Mirror2;
 export declare function throttle<T>(func: (arg: T) => void, wait: number, options?: throttleOptions): (arg: T) => void;
 export declare function hookSetter<T>(target: T, key: string | number | symbol, d: PropertyDescriptor, isRevoked?: boolean, win?: Window & typeof globalThis): hookResetter;
 export declare function patch(source: {
@@ -61,5 +62,13 @@ export declare type AppendedIframe = {
     builtNode: HTMLIFrameINode;
 };
 export declare function isIframeINode(node: INode): node is HTMLIFrameINode;
+declare type HTMLIFrameINode2 = HTMLIFrameElement & {
+    __rsn: serializedNodeWithId;
+};
+export declare type AppendedIframe2 = {
+    mutationInQueue: addedNodeMutation;
+    builtNode: HTMLIFrameINode2;
+};
+export declare function isIframeINode2(node: INode2): node is HTMLIFrameINode2;
 export declare function getBaseDimension(node: Node): DocumentDimension;
 export {};

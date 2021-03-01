@@ -418,6 +418,7 @@ export default class MutationBuffer {
         // overwrite attribute if the mutations was triggered in same time
         item.attributes[m.attributeName!] = transformAttribute(
           this.doc,
+          (m.target as Element).tagName,
           m.attributeName!,
           value!,
         );

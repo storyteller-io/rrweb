@@ -15,12 +15,14 @@ import {
   scrollData,
   inputData,
   DocumentDimension,
+  Mirror2,
 } from './types';
 import {
   INode,
   IGNORED_NODE,
   serializedNodeWithId,
   NodeType,
+  INode2,
 } from 'rrweb-snapshot';
 
 export function on(
@@ -57,6 +59,33 @@ export const mirror: Mirror = {
   },
   has(id) {
     return mirror.map.hasOwnProperty(id);
+  },
+};
+
+export const mirror2: Mirror2 = {
+  map: {},
+  getId(n) {
+    // if n is not a serialized INode, use -1 as its id.
+    if (!n.__rsn) {
+      return -1;
+    }
+    return n.__rsn.id;
+  },
+  getNode(id) {
+    return mirror2.map[id] || null;
+  },
+  // TODO: use a weakmap to get rid of manually memory management
+  removeNodeFromMap(n) {
+    const id = n.__rsn && n.__rsn.id;
+    delete mirror2.map[id];
+    if (n.childNodes) {
+      n.childNodes.forEach((child) =>
+        mirror2.removeNodeFromMap((child as Node) as INode2),
+      );
+    }
+  },
+  has(id) {
+    return mirror2.map.hasOwnProperty(id);
   },
 };
 
@@ -548,6 +577,23 @@ export function isIframeINode(node: INode): node is HTMLIFrameINode {
     return false;
   }
   return node.__sn.type === NodeType.Element && node.__sn.tagName === 'iframe';
+}
+
+type HTMLIFrameINode2 = HTMLIFrameElement & {
+  __rsn: serializedNodeWithId;
+};
+export type AppendedIframe2 = {
+  mutationInQueue: addedNodeMutation;
+  builtNode: HTMLIFrameINode2;
+};
+export function isIframeINode2(node: INode2): node is HTMLIFrameINode2 {
+  // node can be document fragment when using the virtual parent feature
+  if (!node.__rsn) {
+    return false;
+  }
+  return (
+    node.__rsn.type === NodeType.Element && node.__rsn.tagName === 'iframe'
+  );
 }
 
 export function getBaseDimension(node: Node): DocumentDimension {

@@ -2754,10 +2754,9 @@ rollup@^2.3.3:
   optionalDependencies:
     fsevents "~2.1.2"
 
-rrweb-snapshot@^1.0.7:
+"rrweb-snapshot@https://github.com/storyteller-io/rrweb-snapshot.git":
   version "1.0.7"
-  resolved "https://registry.yarnpkg.com/rrweb-snapshot/-/rrweb-snapshot-1.0.7.tgz#9d334590089af4a857970ef4e9e978d986a122d1"
-  integrity sha512-6fu9+KiQlFPkFk2SdahIDsV+yu1juiAR/o+kOiwKPbXur1TiFGMPAfaQNCkqLc8Nvyx3ItkJmrIldyxnAalEag==
+  resolved "https://github.com/storyteller-io/rrweb-snapshot.git#9566e682abae61809cfab1d717dec346551aa45f"
 
 run-async@^2.2.0:
   version "2.4.1"
@@ -3114,10 +3113,10 @@ typedarray@^0.0.6:
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
 
-typescript@^3.9.5:
-  version "3.9.7"
-  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.7.tgz#98d600a5ebdc38f40cb277522f12dc800e9e25fa"
-  integrity sha512-BLbiRkiBzAwsjut4x/dsibSTB6yWpwT5qWmC2OfuCg3GgVQCSgMs4vEctYPhsaGtd0AeuuHMkjZ2h2WG8MSzRw==
+typescript@3.9.5:
+  version "3.9.5"
+  resolved "https://registry.yarnpkg.com/typescript/-/typescript-3.9.5.tgz#586f0dba300cde8be52dd1ac4f7e1009c1b13f36"
+  integrity sha512-hSAifV3k+i6lEoCJ2k6R2Z/rp/H3+8sdmcn5NrS3/3kE7+RyZXm9aqvxWqjEXHAd8b0pShatpcdMTvEdvAJltQ==
 
 uniq@^1.0.1:
   version "1.0.1"
