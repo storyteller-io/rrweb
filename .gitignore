@@ -5,7 +5,7 @@ package-lock.json
 # yarn.lock
 build
 dist
-es
+!es/rrweb/node_modules
 lib
 
 temp
