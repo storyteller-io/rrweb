@@ -5,3 +5,4 @@ package-lock.json
 yarn.lock
 temp
 *.log
+!es/rrweb/node_modules
