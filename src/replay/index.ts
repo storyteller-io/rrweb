@@ -1176,6 +1176,15 @@ export class Replayer {
           ? parent.insertBefore(target, next)
           : parent.insertBefore(target, null);
       } else {
+        /**
+         * When nest recording rrweb player, there are some wired case
+         */
+        if (parent === targetDoc) {
+          while (targetDoc.firstChild) {
+            targetDoc.removeChild(targetDoc.firstChild);
+          }
+        }
+
         parent.appendChild(target);
       }
 
