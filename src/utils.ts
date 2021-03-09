@@ -62,32 +62,34 @@ export const mirror: Mirror = {
   },
 };
 
-export const mirror2: Mirror2 = {
-  map: {},
-  getId(n) {
-    // if n is not a serialized INode, use -1 as its id.
-    if (!n.__rsn) {
-      return -1;
-    }
-    return n.__rsn.id;
-  },
-  getNode(id) {
-    return mirror2.map[id] || null;
-  },
-  // TODO: use a weakmap to get rid of manually memory management
-  removeNodeFromMap(n) {
-    const id = n.__rsn && n.__rsn.id;
-    delete mirror2.map[id];
-    if (n.childNodes) {
-      n.childNodes.forEach((child) =>
-        mirror2.removeNodeFromMap((child as Node) as INode2),
-      );
-    }
-  },
-  has(id) {
-    return mirror2.map.hasOwnProperty(id);
-  },
-};
+export function createMirror2(): Mirror2 {
+  return {
+    map: {},
+    getId(n) {
+      // if n is not a serialized INode, use -1 as its id.
+      if (!n.__rsn) {
+        return -1;
+      }
+      return n.__rsn.id;
+    },
+    getNode(id) {
+      return this.map[id] || null;
+    },
+    // TODO: use a weakmap to get rid of manually memory management
+    removeNodeFromMap(n) {
+      const id = n.__rsn && n.__rsn.id;
+      delete this.map[id];
+      if (n.childNodes) {
+        n.childNodes.forEach((child) =>
+          this.removeNodeFromMap((child as Node) as INode2),
+        );
+      }
+    },
+    has(id) {
+      return this.map.hasOwnProperty(id);
+    },
+  };
+}
 
 // copy from underscore and modified
 export function throttle<T>(
