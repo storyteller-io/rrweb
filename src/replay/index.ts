@@ -103,6 +103,8 @@ export class Replayer {
 
   public config: playerConfig;
 
+  public mirror: Mirror2 = createMirror2();
+
   private mouse: HTMLDivElement;
   private mouseTail: HTMLCanvasElement | null = null;
   private tailPositions: Array<{ x: number; y: number }> = [];
@@ -121,8 +123,6 @@ export class Replayer {
   private imageMap: Map<eventWithTime, HTMLImageElement> = new Map();
 
   private newDocumentQueue: addedNodeMutation[] = [];
-
-  private mirror: Mirror2 = createMirror2();
 
   constructor(
     events: Array<eventWithTime | string>,
