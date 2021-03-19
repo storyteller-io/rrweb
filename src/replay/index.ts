@@ -164,23 +164,9 @@ export class Replayer {
     this.emitter.on(ReplayerEvents.Flush, () => {
       const { scrollMap, inputMap } = this.treeIndex.flush();
 
-      for (const [frag, parent] of this.fragmentParentMap.entries()) {
-        this.mirror.map[parent.__rsn.id] = parent;
-        /**
-         * If we have already set value attribute on textarea,
-         * then we could not apply text content as default value any more.
-         */
-        if (
-          parent.__rsn.type === NodeType.Element &&
-          parent.__rsn.tagName === 'textarea' &&
-          frag.textContent
-        ) {
-          ((parent as unknown) as HTMLTextAreaElement).value = frag.textContent;
-        }
-        parent.appendChild(frag);
-        // restore state of elements after they are mounted
-        this.restoreState(parent);
-      }
+      this.fragmentParentMap.forEach((parent, frag) =>
+        this.mountFragmentDom(frag, parent),
+      );
       this.fragmentParentMap.clear();
       this.elementStateMap.clear();
 
@@ -609,6 +595,20 @@ export class Replayer {
     iframeEl: HTMLIFrameElement,
   ) {
     const collected: AppendedIframe2[] = [];
+    // if iframeEl is detached from dom, iframeEl.contentDocument is null
+    if (!iframeEl.contentDocument) {
+      let parent = iframeEl.parentNode;
+      while (parent) {
+        // The parent of iframeEl is virtual parent and we need to mount it on the dom.
+        if (this.fragmentParentMap.has((parent as unknown) as INode2)) {
+          const frag = (parent as unknown) as INode2;
+          const realParent = this.fragmentParentMap.get(frag)!;
+          this.mountFragmentDom(frag, realParent);
+          break;
+        }
+        parent = parent.parentNode;
+      }
+    }
     buildNodeWithSN(mutation.node, {
       doc: iframeEl.contentDocument!,
       map: this.mirror.map,
@@ -1116,8 +1116,19 @@ export class Replayer {
         // refer 'Internet Explorer notes' at https://developer.mozilla.org/zh-CN/docs/Web/API/Document
         parentInDocument = this.iframe.contentDocument.body.contains(parent);
       }
-
-      if (useVirtualParent && parentInDocument) {
+      const hasIframeChild =
+        ((parent as unknown) as HTMLElement).getElementsByTagName?.('iframe')
+          .length > 0;
+      /**
+       * !isIframeINode2(parent): If parent element is an iframe, iframe document can't be appended to virtual parent
+       * !hasIframeChild: If we move iframe elements from dom to fragment document, we will lose the contentDocument of iframe. So we need to disable the virtual dom optimization if a parent node contains iframe elements.
+       */
+      if (
+        useVirtualParent &&
+        parentInDocument &&
+        !isIframeINode2(parent) &&
+        !hasIframeChild
+      ) {
         const virtualParent = (document.createDocumentFragment() as unknown) as INode2;
         this.mirror.map[mutation.parentId] = virtualParent;
         this.fragmentParentMap.set(virtualParent, parent);
@@ -1180,14 +1191,13 @@ export class Replayer {
           : parent.insertBefore(target, null);
       } else {
         /**
-         * When nest recording rrweb player, there are some wired case
+         * Sometimes the document changes and the MutationObserver is disconnected, so the removal of child elements can't be detected and recorded. After the change of document, we may get another mutation which adds a new html element, while the old html element still exists in the dom, and we need to remove the old html element first to avoid collision.
          */
         if (parent === targetDoc) {
           while (targetDoc.firstChild) {
             targetDoc.removeChild(targetDoc.firstChild);
           }
         }
-
         parent.appendChild(target);
       }
 
@@ -1500,6 +1510,29 @@ export class Replayer {
     this.emitter.emit(ReplayerEvents.SkipEnd, {
       speed: this.speedService.state.context.normalSpeed,
     });
+  }
+
+  /**
+   * mount fragment document on real parent element
+   * @param frag fragment document, the virtual dom
+   * @param parent real parent element
+   */
+  private mountFragmentDom(frag: INode2, parent: INode2) {
+    this.mirror.map[parent.__rsn.id] = parent;
+    /**
+     * If we have already set value attribute on textarea,
+     * then we could not apply text content as default value any more.
+     */
+    if (
+      parent.__rsn.type === NodeType.Element &&
+      parent.__rsn.tagName === 'textarea' &&
+      frag.textContent
+    ) {
+      ((parent as unknown) as HTMLTextAreaElement).value = frag.textContent;
+    }
+    parent.appendChild(frag);
+    // restore state of elements after they are mounted
+    this.restoreState(parent);
   }
 
   /**

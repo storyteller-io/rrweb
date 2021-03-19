@@ -1,6 +1,6 @@
 import { Timer } from './timer';
 import { createPlayerService, createSpeedService } from './machine';
-import { eventWithTime, playerConfig, playerMetaData, Handler } from '../types';
+import { eventWithTime, playerConfig, playerMetaData, Handler, Mirror2 } from '../types';
 import './styles/style.css';
 export declare class Replayer {
     wrapper: HTMLDivElement;
@@ -9,6 +9,7 @@ export declare class Replayer {
     speedService: ReturnType<typeof createSpeedService>;
     get timer(): Timer;
     config: playerConfig;
+    mirror: Mirror2;
     private mouse;
     private mouseTail;
     private tailPositions;
@@ -54,6 +55,7 @@ export declare class Replayer {
     private hoverElements;
     private isUserInteraction;
     private backToNormal;
+    private mountFragmentDom;
     private storeState;
     private restoreState;
     private warnNodeNotFound;
