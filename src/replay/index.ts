@@ -1431,10 +1431,9 @@ export class Replayer {
     if (!target) {
       return this.debugNodeNotFound(d, id);
     }
-
-    const base = getBaseDimension(target);
-    const _x = x + base.x;
-    const _y = y + base.y;
+    const base = getBaseDimension(target, this.iframe);
+    const _x = x * base.absoluteScale + base.x;
+    const _y = y * base.absoluteScale + base.y;
 
     this.mouse.style.left = `${_x}px`;
     this.mouse.style.top = `${_y}px`;

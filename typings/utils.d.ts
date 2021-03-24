@@ -70,5 +70,5 @@ export declare type AppendedIframe2 = {
     builtNode: HTMLIFrameINode2;
 };
 export declare function isIframeINode2(node: INode2): node is HTMLIFrameINode2;
-export declare function getBaseDimension(node: Node): DocumentDimension;
+export declare function getBaseDimension(node: Node, rootIframe: Node): DocumentDimension;
 export {};
